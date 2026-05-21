@@ -14,7 +14,7 @@ Consume una API publica del sistema solar para generar un juego de puntajes, reg
 ## Tecnologias
 - Frontend: HTML + CSS + JS (vanilla)
 - Backend: PHP 8+
-- Base de datos: SQLite
+- Base de datos: MySQL (XAMPP / MySQL Workbench)
 - API publica consumida: `https://api.le-systeme-solaire.net/rest/bodies/`
 - Logging: archivo JSON lines en `logs/solar_events.log`
 
@@ -47,10 +47,15 @@ web_api_system_solar/
 ```
 
 ## Ejecucion local
-1. Desde la raiz del proyecto:
+1. En XAMPP, iniciar `Apache` y `MySQL`.
+2. (Opcional) Ejecutar `database/schema.sql` en Workbench o phpMyAdmin.
+3. Verificar credenciales MySQL en `back/config.php`.
+4. Desde la raiz del proyecto (si no usas Apache de XAMPP):
    - `php -S localhost:8000`
-2. Abrir:
+5. Abrir:
    - `http://localhost:8000`
+
+Nota: el backend tambien crea automaticamente la base y tablas si el usuario MySQL tiene permisos.
 
 ## Usuarios de prueba
 - neo.solar / sol12345

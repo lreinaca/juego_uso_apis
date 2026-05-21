@@ -15,7 +15,7 @@
 - CSS3 para diseno responsivo y experiencia visual.
 - JavaScript para dinamica del juego y render de reportes.
 - PHP para logica backend, autenticacion, consumo de API y endpoints.
-- SQLite para persistencia de usuarios y puntajes.
+- MySQL para persistencia de usuarios y puntajes (XAMPP / Workbench).
 
 ## 3. Reglas de negocio implementadas
 - Solo usuarios precargados pueden ingresar.
@@ -90,3 +90,13 @@ erDiagram
 En `back/config.php` se puede personalizar:
 - Ruta: `LOG_DIR`
 - Nombre de archivo: `LOG_FILE_NAME`
+
+## 8. Configuracion de base de datos (MySQL)
+En `back/config.php` se puede personalizar:
+- `DB_HOST`
+- `DB_PORT`
+- `DB_NAME`
+- `DB_USER`
+- `DB_PASSWORD`
+
+Adicionalmente, puede ejecutar `database/schema.sql` desde MySQL Workbench para crear el esquema manualmente.

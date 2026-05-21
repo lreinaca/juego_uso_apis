@@ -44,8 +44,8 @@ $periodQuery = static function (string $periodExpr) use ($pdo, $selectedUserId):
     return $stmt->fetchAll();
 };
 
-$weekly = $periodQuery("strftime('%Y-W%W', s.created_at)");
-$monthly = $periodQuery("strftime('%Y-%m', s.created_at)");
+$weekly = $periodQuery("DATE_FORMAT(s.created_at, '%x-W%v')");
+$monthly = $periodQuery("DATE_FORMAT(s.created_at, '%Y-%m')");
 
 $allTimeStmt = $pdo->query(
     'SELECT u.full_name, COUNT(*) AS games, ROUND(AVG(s.score), 2) AS avg_score, MAX(s.score) AS best_score
