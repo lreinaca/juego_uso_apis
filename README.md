@@ -1,0 +1,58 @@
+# Solar Score Arena
+
+Aplicacion web dinamica construida con HTML, CSS, JavaScript y PHP.
+Consume una API publica del sistema solar para generar un juego de puntajes, registra resultados en base de datos y guarda logs de eventos.
+
+## Requisitos funcionales cubiertos
+1. Usuarios previamente registrados (seed automatico).
+2. Insercion del usuario y puntaje en BD al terminar cada partida.
+3. Registro de eventos en archivo de log configurable.
+4. Puntaje con usuario, fecha y rondas almacenado en BD.
+5. Consulta de historial de una persona.
+6. Reportes agrupados por semana, mes y todo el tiempo.
+
+## Tecnologias
+- Frontend: HTML + CSS + JS (vanilla)
+- Backend: PHP 8+
+- Base de datos: SQLite
+- API publica consumida: `https://api.le-systeme-solaire.net/rest/bodies/`
+- Logging: archivo JSON lines en `logs/solar_events.log`
+
+## Estructura
+```text
+web_api_system_solar/
+  front/
+    index.php
+    login.php
+    dashboard.php
+    scripts/app.js
+    styles/styles.css
+  back/
+    bootstrap.php
+    config.php
+    db.php
+    helpers.php
+    logger.php
+    auth_login.php
+    logout.php
+  api/
+    game_data.php
+    save_score.php
+    report_data.php
+  database/
+    schema.sql
+  logs/
+  index.php
+  DOCUMENTACION.md
+```
+
+## Ejecucion local
+1. Desde la raiz del proyecto:
+   - `php -S localhost:8000`
+2. Abrir:
+   - `http://localhost:8000`
+
+## Usuarios de prueba
+- neo.solar / sol12345
+- luna.bit / luna12345
+- astro.admin / admin12345
