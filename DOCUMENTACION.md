@@ -87,12 +87,12 @@ erDiagram
   - context
 
 ## 7. Configuracion de log
-En `back/config.php` se puede personalizar:
+En `back/conexion.php` se puede personalizar:
 - Ruta: `LOG_DIR`
 - Nombre de archivo: `LOG_FILE_NAME`
 
 ## 8. Configuracion de base de datos (MySQL)
-En `back/config.php` se puede personalizar:
+En `back/conexion.php` se puede personalizar:
 - `DB_HOST`
 - `DB_PORT`
 - `DB_NAME`

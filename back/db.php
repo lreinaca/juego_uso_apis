@@ -2,7 +2,13 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/config.php';
+// Carga constantes de entorno y credenciales de base de datos desde back/conexion.php.
+require_once __DIR__ . '/conexion.php';
+
+// Crea una unica instancia PDO para todo el request.
+// Primer paso: conexion al servidor MySQL.
+// Segundo paso: creacion del esquema si no existe.
+// Tercer paso: reconexion a la base final y bootstrap de tablas/seed.
 
 function db(): PDO
 {
@@ -36,6 +42,7 @@ function db(): PDO
 
 function initialize_database(PDO $pdo): void
 {
+    // Estructura minima para autenticacion y almacenamiento de puntajes.
     $pdo->exec(
         'CREATE TABLE IF NOT EXISTS users (
             id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -66,6 +73,7 @@ function initialize_database(PDO $pdo): void
         $pdo->exec('CREATE INDEX idx_scores_user_created ON scores(user_id, created_at)');
     }
 
+    // Seed idempotente: asegura cuentas de acceso para la demo.
     seed_users($pdo);
 }
 

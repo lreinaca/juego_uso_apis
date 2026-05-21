@@ -161,8 +161,33 @@ body {
     display: grid;
     place-items: center;
     font-weight: 800;
+    letter-spacing: 0.02em;
     color: #fff;
-    background: linear-gradient(130deg, var(--orange-500), var(--teal-500));
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    background: linear-gradient(145deg, #fb923c 0%, var(--orange-500) 42%, var(--teal-500) 100%);
+    box-shadow:
+        0 10px 24px rgba(14, 165, 233, 0.22),
+        0 4px 12px rgba(249, 115, 22, 0.24);
+}
+
+.brand-icon::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 55%);
+    z-index: -1;
+}
+
+.brand-icon::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    z-index: -1;
 }
 
 .brand-kicker {

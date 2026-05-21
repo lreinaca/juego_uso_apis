@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-require_once __DIR__ . '/config.php';
+// Carga constantes de entorno y credenciales de base de datos desde back/conexion.php.
+require_once __DIR__ . '/conexion.php';
 
+// Logger estructurado tipo JSONL (una linea por evento).
+// Facilita busqueda por route/event en analisis posterior.
 function app_log(string $route, string $event, array $context = []): void
 {
     if (!is_dir(LOG_DIR)) {

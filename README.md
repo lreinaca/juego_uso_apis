@@ -3,6 +3,9 @@
 Aplicacion web dinamica construida con HTML, CSS, JavaScript y PHP.
 Consume una API publica del sistema solar para generar un juego de puntajes, registra resultados en base de datos y guarda logs de eventos.
 
+Guia de onboarding tecnico:
+- ONBOARDING.md
+
 ## Requisitos funcionales cubiertos
 1. Usuarios previamente registrados (seed automatico).
 2. Insercion del usuario y puntaje en BD al terminar cada partida.
@@ -29,7 +32,7 @@ web_api_system_solar/
     styles/styles.css
   back/
     bootstrap.php
-    config.php
+    conexion.php
     db.php
     helpers.php
     logger.php
@@ -49,7 +52,7 @@ web_api_system_solar/
 ## Ejecucion local
 1. En XAMPP, iniciar `Apache` y `MySQL`.
 2. (Opcional) Ejecutar `database/schema.sql` en Workbench o phpMyAdmin.
-3. Verificar credenciales MySQL en `back/config.php`.
+3. Verificar credenciales MySQL en `back/conexion.php`.
 4. Desde la raiz del proyecto (si no usas Apache de XAMPP):
    - `php -S localhost:8000`
 5. Abrir:

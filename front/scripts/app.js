@@ -1,4 +1,5 @@
 (() => {
+    // Estado de juego en memoria del navegador.
     const state = {
         score: 0,
         rounds: 0,
@@ -9,6 +10,8 @@
     };
 
     const roundsTarget = Number(window.APP_BOOTSTRAP?.roundsPerGame || 5);
+    // Flag entregado por PHP para habilitar filtro multiusuario solo en admin.
+    const isAdmin = Boolean(window.APP_BOOTSTRAP?.isAdmin);
 
     const scoreValue = document.querySelector('#scoreValue');
     const roundsValue = document.querySelector('#roundsValue');
@@ -23,6 +26,10 @@
     const monthBody = document.querySelector('#monthBody');
     const allTimeBody = document.querySelector('#allTimeBody');
 
+    const hasGameArea = Boolean(scoreValue && roundsValue && streakValue && gameContainer);
+    const hasReportsArea = Boolean(summaryCards && historyBody && weekBody && monthBody && allTimeBody && userFilter);
+
+    // Escape HTML defensivo para render de datos dinamicos.
     const esc = (v) => String(v ?? '')
         .replaceAll('&', '&amp;')
         .replaceAll('<', '&lt;')
@@ -39,6 +46,7 @@
         return copy;
     };
 
+    // Reinicia el estado de una partida completa.
     const resetGame = () => {
         state.score = 0;
         state.rounds = 0;
@@ -49,11 +57,15 @@
     };
 
     const updateScoreBoard = () => {
+        if (!hasGameArea) {
+            return;
+        }
         scoreValue.textContent = state.score;
         roundsValue.textContent = `${state.rounds}/${roundsTarget}`;
         streakValue.textContent = state.streak;
     };
 
+    // Pinta una ronda del quiz y procesa la respuesta del jugador.
     const renderQuestion = () => {
         const current = state.selectedQuestions[state.currentQuestion];
         if (!current) {
@@ -61,13 +73,7 @@
             return;
         }
 
-        const options = shuffle(state.planets)
-            .slice(0, 4)
-            .map((p) => p.name);
-
-        if (!options.includes(current.name)) {
-            options[Math.floor(Math.random() * options.length)] = current.name;
-        }
+        const options = shuffle(state.planets).map((p) => p.name);
 
         gameContainer.innerHTML = `
             <div class="quiz-card">
@@ -117,6 +123,7 @@
         });
     };
 
+    // Cierra partida, persiste puntaje y refresca reportes.
     const finishGame = async () => {
         gameContainer.innerHTML = '<div class="quiz-card"><p>Guardando puntaje...</p></div>';
 
@@ -144,11 +151,17 @@
         }
     };
 
+    // Arranca una nueva partida consultando planetas desde la API interna.
     const startGame = async () => {
+        if (!hasGameArea) {
+            return;
+        }
+
         resetGame();
         gameContainer.innerHTML = '<div class="quiz-card"><p>Cargando preguntas desde API pública...</p></div>';
 
         try {
+            // El quiz siempre arranca con datos del endpoint interno conectado a la API publica.
             const resp = await fetch('../api/game_data.php', { cache: 'no-store' });
             const payload = await resp.json();
 
@@ -165,6 +178,7 @@
         }
     };
 
+    // Helper de render tabular para todas las secciones de reportes.
     const rows = (items, cells) => {
         if (!items || items.length === 0) {
             return '<tr><td colspan="5">Sin datos disponibles.</td></tr>';
@@ -172,16 +186,37 @@
         return items.map((item) => `<tr>${cells(item).map((c) => `<td>${esc(c)}</td>`).join('')}</tr>`).join('');
     };
 
+    // Hidrata panel de reportes consumiendo endpoint consolidado.
     const loadReports = async (forceUserId) => {
-        const chosenUser = Number(forceUserId || userFilter.value || window.APP_BOOTSTRAP.userId);
+        if (!hasReportsArea) {
+            return;
+        }
+
+        const chosenUser = Number(
+            isAdmin
+                ? (forceUserId || userFilter.value || window.APP_BOOTSTRAP.userId)
+                : window.APP_BOOTSTRAP.userId
+        );
 
         try {
             const resp = await fetch(`../api/report_data.php?userId=${encodeURIComponent(chosenUser)}`, { cache: 'no-store' });
             const payload = await resp.json();
 
-            userFilter.innerHTML = (payload.users || [])
-                .map((u) => `<option value="${Number(u.id)}" ${Number(u.id) === Number(payload.selectedUserId) ? 'selected' : ''}>${esc(u.full_name)}</option>`)
-                .join('');
+            if (!payload.ok) {
+                summaryCards.innerHTML = '<article class="report-card"><span>Error</span><strong>No fue posible cargar reportes</strong></article>';
+                return;
+            }
+
+            if (isAdmin) {
+                // Solo admin puede alternar usuario para ver reportes ajenos.
+                userFilter.hidden = false;
+                userFilter.innerHTML = (payload.users || [])
+                    .map((u) => `<option value="${Number(u.id)}" ${Number(u.id) === Number(payload.selectedUserId) ? 'selected' : ''}>${esc(u.full_name)}</option>`)
+                    .join('');
+            } else {
+                // Usuario normal: sin filtro, dashboard personal fijo.
+                userFilter.hidden = true;
+            }
 
             const summary = payload.summary || {};
             summaryCards.innerHTML = `
@@ -199,12 +234,19 @@
         }
     };
 
-    userFilter?.addEventListener('change', () => loadReports(userFilter.value));
-    startGameBtn?.addEventListener('click', startGame);
+    // Listeners principales de UI.
+    if (hasReportsArea && isAdmin) {
+        userFilter?.addEventListener('change', () => loadReports(userFilter.value));
+    }
+    if (hasGameArea) {
+        startGameBtn?.addEventListener('click', startGame);
+    }
 
     document.querySelectorAll('.reveal-up').forEach((el, i) => {
         setTimeout(() => el.classList.add('visible'), i * 90);
     });
 
-    loadReports(window.APP_BOOTSTRAP.userId);
+    if (hasReportsArea) {
+        loadReports(window.APP_BOOTSTRAP.userId);
+    }
 })();

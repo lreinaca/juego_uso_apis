@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../back/helpers.php';
 
+// Pantalla de entrada para usuarios demo precargados.
+// Si existe sesion activa, evita mostrar login y redirige al dashboard.
 if (current_user()) {
     redirect_to('dashboard.php');
 }
@@ -24,7 +26,7 @@ $msg = trim($_GET['msg'] ?? '');
 </head>
 <body class="auth-bg">
     <main class="auth-shell">
-        <section class="auth-card reveal-up">
+        <section class="auth-card reveal-up visible">
             <p class="auth-kicker">Acceso protegido</p>
             <h1>Solar Score Arena</h1>
             <p class="auth-subtitle">Inicia sesión para jugar, guardar puntajes en base de datos y consultar reportes.</p>
@@ -38,22 +40,14 @@ $msg = trim($_GET['msg'] ?? '');
 
             <form action="../back/auth_login.php" method="POST" class="auth-form">
                 <label for="username">Usuario</label>
-                <input id="username" name="username" type="text" placeholder="Ej: neo.solar" required>
+                <input id="username" name="username" type="text" placeholder="Ej: neo.solar" autocomplete="username" required>
 
                 <label for="password">Contraseña</label>
-                <input id="password" name="password" type="password" placeholder="Tu contraseña" required>
+                <input id="password" name="password" type="password" placeholder="Tu contraseña" autocomplete="current-password" required>
 
                 <button type="submit">Entrar al sistema</button>
             </form>
 
-            <div class="demo-users">
-                <h2>Usuarios precargados</h2>
-                <ul>
-                    <li>neo.solar / sol12345</li>
-                    <li>luna.bit / luna12345</li>
-                    <li>astro.admin / admin12345</li>
-                </ul>
-            </div>
         </section>
     </main>
 </body>
